@@ -1,0 +1,81 @@
+CREATE DATABASE suporte_tecnico;
+USE suporte_tecnico;
+
+
+CREATE TABLE clientes (
+  id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100),
+  email VARCHAR(100),
+  telefone VARCHAR(20)
+);
+
+
+CREATE TABLE tecnicos (
+  id_tecnico INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100),
+  especialidade VARCHAR(50),
+  telefone VARCHAR(20)
+);
+
+
+CREATE TABLE servicos (
+  id_servico INT AUTO_INCREMENT PRIMARY KEY,
+  descricao VARCHAR(200),
+  preco DECIMAL(10,2)
+);
+
+
+CREATE TABLE status_chamado (
+  id_status INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(50)
+);
+
+
+CREATE TABLE chamados (
+  id_chamado INT AUTO_INCREMENT PRIMARY KEY,
+  id_cliente INT,
+  id_tecnico INT,
+  id_servico INT,
+  id_status INT,
+  data_abertura DATE,
+  data_fechamento DATE,
+  FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente),
+  FOREIGN KEY (id_tecnico) REFERENCES tecnicos(id_tecnico),
+  FOREIGN KEY (id_servico) REFERENCES servicos(id_servico),
+  FOREIGN KEY (id_status) REFERENCES status_chamado(id_status)
+);
+
+
+INSERT INTO clientes (nome, email, telefone) VALUES
+('Lucas Pereira', 'lucas@email.com', '9999-1111'),
+('Maria Oliveira', 'maria@email.com', '9888-2222'),
+('João Almeida', 'joao@email.com', '9777-3333');
+
+INSERT INTO tecnicos (nome, especialidade, telefone) VALUES
+('Carlos Souza', 'Redes', '9666-4444'),
+('Beatriz Lima', 'Hardware', '9555-5555');
+
+INSERT INTO servicos (descricao, preco) VALUES
+('Formatação de computador', 120.00),
+('Instalação de rede', 250.00),
+('Troca de HD', 180.00);
+
+INSERT INTO status_chamado (nome) VALUES
+('Aberto'), ('Em andamento'), ('Concluído');
+
+INSERT INTO chamados (id_cliente, id_tecnico, id_servico, id_status, data_abertura, data_fechamento) VALUES
+(1, 1, 2, 3, '2025-11-01', '2025-11-03'),
+(2, 2, 1, 2, '2025-11-04', NULL),
+(3, 1, 3, 1, '2025-11-05', NULL);
+
+SELECT * FROM clientes;
+SELECT * FROM tecnicos;
+SELECT * FROM servicos;
+SELECT * FROM chamados;
+
+SELECT c.id_chamado, cl.nome AS cliente, t.nome AS tecnico, s.descricao, st.nome AS status
+FROM chamados c
+JOIN clientes cl ON c.id_cliente = cl.id_cliente
+JOIN tecnicos t ON c.id_tecnico = t.id_tecnico
+JOIN servicos s ON c.id_servico = s.id_servico
+JOIN status_chamado st ON c.id_status = st.id_status;
